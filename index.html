@@ -3,14 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель выплат партнёрам</title>
+    <title>Панель партнёра</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Экран 1: Общая таблица выплат -->
-        <div id="main-screen">
+        <!-- Навигация -->
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <i class="fas fa-briefcase"></i> Панель партнёра
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-page="home">
+                    <i class="fas fa-home"></i> Главная
+                </a>
+                <a href="#" class="nav-link" data-page="payments">
+                    <i class="fas fa-money-check-alt"></i> Выплаты
+                </a>
+                <a href="#" class="nav-link" data-page="documents">
+                    <i class="fas fa-file-alt"></i> Документы
+                </a>
+                <a href="#" class="nav-link" data-page="dashboard">
+                    <i class="fas fa-chart-bar"></i> Дашборд
+                </a>
+                <a href="#" class="nav-link" data-page="sos">
+                    <i class="fas fa-exclamation-triangle"></i> СОС
+                </a>
+            </div>
+        </nav>
+
+        <!-- Главная страница -->
+        <div id="home-screen" class="screen active">
+            <header>
+                <h1><i class="fas fa-home"></i> Главная</h1>
+                <p class="subtitle">Обзор системы и быстрый доступ</p>
+            </header>
+
+            <!-- Быстрые действия -->
+            <div class="quick-actions">
+                <a href="#" class="quick-action-btn sos-btn" data-page="sos">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>СОС</span>
+                </a>
+                <a href="#" class="quick-action-btn" data-page="payments" data-action="last-payments">
+                    <i class="fas fa-bolt"></i>
+                    <span>Последние выплаты</span>
+                </a>
+                <a href="#" class="quick-action-btn warning-btn" data-page="documents" data-action="unprocessed">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Неоформленные</span>
+                </a>
+            </div>
+
+            <!-- Статистика -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--primary);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Всего сотрудников</div>
+                        <div class="stat-value" id="stat-total-employees">-</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Оформлено</div>
+                        <div class="stat-value" id="stat-processed">
+                            <span id="stat-processed-count">-</span>
+                            <span class="stat-percent" id="stat-processed-percent">(-%)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                        <i class="fas fa-ruble-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Выплаты за месяц</div>
+                        <div class="stat-value" id="stat-monthly-payments">-</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Неоплаченные</div>
+                        <div class="stat-value" id="stat-unpaid">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран выплат (бывший main-screen) -->
+        <div id="payments-screen" class="screen hidden">
             <header>
                 <h1><i class="fas fa-money-check-alt"></i> Статусы выплат сотрудникам</h1>
                 <p class="subtitle">Обновляется автоматически из Google Таблицы</p>
@@ -99,6 +190,7 @@
                                 <th data-sort="phone">Телефон <i class="fas fa-sort"></i></th>
                                 <th data-sort="amount">Сумма из реестра <i class="fas fa-sort"></i></th>
                                 <th data-sort="status">Статус <i class="fas fa-sort"></i></th>
+                                <th>Документы</th>
                                 <th data-sort="comment">Комментарий <i class="fas fa-sort"></i></th>
                             </tr>
                         </thead>
@@ -129,11 +221,131 @@
             </div>
         </div>
 
-        <!-- Экран 2: Карточка сотрудника -->
-        <div id="employee-screen" class="hidden">
+        <!-- Экран документов -->
+        <div id="documents-screen" class="screen hidden">
+            <header>
+                <h1><i class="fas fa-file-alt"></i> Документы сотрудников</h1>
+                <p class="subtitle">Контроль оформленности сотрудников</p>
+            </header>
+
+            <!-- Фильтры документов -->
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="doc-status-filter"><i class="fas fa-check-circle"></i> Статус:</label>
+                        <select id="doc-status-filter">
+                            <option value="">Все статусы</option>
+                            <option value="processed">✅ Оформлен</option>
+                            <option value="partial">⚠ Частично оформлен</option>
+                            <option value="not-processed">❌ Не оформлен</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="doc-position-filter"><i class="fas fa-briefcase"></i> Должность:</label>
+                        <select id="doc-position-filter">
+                            <option value="">Все должности</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="doc-restaurant-filter"><i class="fas fa-store"></i> Ресторан:</label>
+                        <select id="doc-restaurant-filter">
+                            <option value="">Все рестораны</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="doc-problems-filter"><i class="fas fa-exclamation-triangle"></i> Проблемы:</label>
+                        <select id="doc-problems-filter">
+                            <option value="">Все</option>
+                            <option value="has-problems">С проблемами</option>
+                            <option value="no-problems">Без проблем</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="search-group">
+                        <label for="doc-search-input"><i class="fas fa-search"></i> Поиск:</label>
+                        <input type="text" id="doc-search-input" placeholder="ФИО или телефон сотрудника...">
+                    </div>
+                    <div class="button-group">
+                        <button id="doc-reset-filters" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Сбросить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статус загрузки документов -->
+            <div id="doc-loading" class="loading">
+                <div class="spinner"></div>
+                <p>Загрузка документов...</p>
+            </div>
+
+            <!-- Таблица документов -->
+            <div id="doc-table-container" class="table-container hidden">
+                <div class="table-header">
+                    <div class="table-info">
+                        <span id="doc-table-info">Загружено <span id="doc-row-count">0</span> записей</span>
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="documents-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="employee">ФИО <i class="fas fa-sort"></i></th>
+                                <th data-sort="phone">Телефон <i class="fas fa-sort"></i></th>
+                                <th data-sort="position">Должность <i class="fas fa-sort"></i></th>
+                                <th data-sort="restaurant">Ресторан <i class="fas fa-sort"></i></th>
+                                <th data-sort="status">Статус документов <i class="fas fa-sort"></i></th>
+                                <th>Проблемы</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doc-table-body">
+                            <!-- Данные будут загружены через JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Сообщение об ошибке документов -->
+            <div id="doc-error-message" class="error-message hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Не удалось загрузить данные о документах. Пожалуйста, проверьте подключение и попробуйте позже.</p>
+                <button id="doc-retry-load" class="btn btn-small">Повторить загрузку</button>
+            </div>
+        </div>
+
+        <!-- Экран дашборда (заглушка) -->
+        <div id="dashboard-screen" class="screen hidden">
+            <header>
+                <h1><i class="fas fa-chart-bar"></i> Дашборд управления</h1>
+                <p class="subtitle">Аналитика и графики</p>
+            </header>
+            <div class="coming-soon">
+                <i class="fas fa-tools"></i>
+                <h2>Страница в разработке</h2>
+                <p>Здесь будут графики, счета и аналитика</p>
+            </div>
+        </div>
+
+        <!-- Экран СОС (заглушка) -->
+        <div id="sos-screen" class="screen hidden">
+            <header>
+                <h1><i class="fas fa-exclamation-triangle"></i> СОС</h1>
+                <p class="subtitle">Экстренные контакты и инструкции</p>
+            </header>
+            <div class="coming-soon">
+                <i class="fas fa-tools"></i>
+                <h2>Страница в разработке</h2>
+                <p>Здесь будут экстренные контакты и инструкции при проверках</p>
+            </div>
+        </div>
+
+        <!-- Экран карточки сотрудника -->
+        <div id="employee-screen" class="screen hidden">
             <header>
                 <button id="back-button" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Назад к таблице
+                    <i class="fas fa-arrow-left"></i> Назад
                 </button>
                 <div class="employee-header">
                     <h1 id="employee-name"></h1>
@@ -144,7 +356,43 @@
                     </div>
                 </div>
                 <p class="subtitle" id="employee-phone"></p>
+                <p class="subtitle" id="employee-citizenship"></p>
             </header>
+
+            <!-- Предупреждение о неоформленности -->
+            <div id="employee-warning" class="employee-warning hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="warning-content">
+                    <h3>⚠️ ВНИМАНИЕ: СОТРУДНИК НЕ ОФОРМЛЕН</h3>
+                    <p id="warning-reason"></p>
+                </div>
+            </div>
+
+            <!-- Информация о документах -->
+            <div class="employee-info">
+                <h2><i class="fas fa-file-alt"></i> Документы</h2>
+                
+                <div id="employee-docs-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Загрузка документов...</p>
+                </div>
+                
+                <div id="employee-documents" class="employee-documents hidden">
+                    <div class="documents-grid">
+                        <!-- Документы будут загружены через JavaScript -->
+                    </div>
+                    
+                    <div id="employee-problems" class="employee-problems hidden">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Проблемы</h3>
+                        <ul id="problems-list"></ul>
+                    </div>
+                    
+                    <div id="employee-recommendations" class="employee-recommendations hidden">
+                        <h3><i class="fas fa-lightbulb"></i> Рекомендации</h3>
+                        <ul id="recommendations-list"></ul>
+                    </div>
+                </div>
+            </div>
 
             <div class="employee-info">
                 <h2><i class="fas fa-history"></i> История выплат</h2>
