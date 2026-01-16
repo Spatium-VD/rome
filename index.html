@@ -16,6 +16,15 @@
                 <p class="subtitle">Обновляется автоматически из Google Таблицы</p>
             </header>
 
+            <!-- Индикатор режима -->
+            <div id="mode-indicator" class="mode-indicator hidden">
+                <i class="fas fa-info-circle"></i>
+                <div id="mode-message"></div>
+                <button onclick="exitMode()" class="btn btn-small">
+                    <i class="fas fa-times"></i> Закрыть
+                </button>
+            </div>
+
             <!-- Фильтры -->
             <div class="filters">
                 <div class="filter-row">
@@ -37,9 +46,6 @@
                         <label for="status-filter"><i class="fas fa-check-circle"></i> Статус:</label>
                         <select id="status-filter">
                             <option value="">Все статусы</option>
-                            <option value="Оплатили">Оплатили</option>
-                            <option value="оплатили в QUGO">Оплатили в QUGO</option>
-                            <option value="Не платим">Не платим</option>
                         </select>
                     </div>
                 </div>
@@ -52,10 +58,13 @@
                     
                     <div class="button-group">
                         <button id="reset-filters" class="btn btn-secondary">
-                            <i class="fas fa-redo"></i> Сбросить фильтры
+                            <i class="fas fa-redo"></i> Сбросить
                         </button>
-                        <button id="last-payments" class="btn btn-primary">
-                            <i class="fas fa-clock"></i> Последние выплаты
+                        <button id="last-period" class="btn btn-primary">
+                            <i class="fas fa-calendar-day"></i> Последний период
+                        </button>
+                        <button id="last-unpaid" class="btn btn-warning">
+                            <i class="fas fa-exclamation-circle"></i> Неоплаченные
                         </button>
                     </div>
                 </div>
@@ -72,10 +81,11 @@
                 <div class="table-header">
                     <div class="table-info">
                         <span id="table-info">Загружено <span id="row-count">0</span> записей</span>
+                        <small id="period-info" class="period-info"></small>
                     </div>
                     <div class="table-actions">
                         <button id="export-csv" class="btn btn-small">
-                            <i class="fas fa-download"></i> Экспорт CSV
+                            <i class="fas fa-download"></i> Экспорт
                         </button>
                     </div>
                 </div>
@@ -125,7 +135,14 @@
                 <button id="back-button" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Назад к таблице
                 </button>
-                <h1 id="employee-name"></h1>
+                <div class="employee-header">
+                    <h1 id="employee-name"></h1>
+                    <div class="employee-actions">
+                        <a id="telegram-link" class="btn btn-telegram" target="_blank">
+                            <i class="fab fa-telegram"></i> Написать в Telegram
+                        </a>
+                    </div>
+                </div>
                 <p class="subtitle" id="employee-phone"></p>
             </header>
 
