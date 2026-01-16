@@ -1,5 +1,5 @@
 
-        // Конфигурация
+// Конфигурация
 const CONFIG = {
     itemsPerPage: 50,
     sortDirection: 'desc',
@@ -18,90 +18,113 @@ let allPeriods = [];
 let allStatuses = [];
 let lastPeriod = '';
 
-// Элементы DOM
-const elements = {
-    // Основной экран
-    mainScreen: document.getElementById('main-screen'),
-    employeeScreen: document.getElementById('employee-screen'),
-    
-    // Фильтры
-    yearFilter: document.getElementById('year-filter'),
-    periodFilter: document.getElementById('period-filter'),
-    statusFilter: document.getElementById('status-filter'),
-    searchInput: document.getElementById('search-input'),
-    resetFiltersBtn: document.getElementById('reset-filters'),
-    lastPeriodBtn: document.getElementById('last-period'),
-    lastUnpaidBtn: document.getElementById('last-unpaid'),
-    
-    // Индикатор режима
-    modeIndicator: document.getElementById('mode-indicator'),
-    modeMessage: document.getElementById('mode-message'),
-    
-    // Таблица
-    loading: document.getElementById('loading'),
-    tableContainer: document.getElementById('table-container'),
-    tableBody: document.getElementById('table-body'),
-    rowCount: document.getElementById('row-count'),
-    periodInfo: document.getElementById('period-info'),
-    errorMessage: document.getElementById('error-message'),
-    retryBtn: document.getElementById('retry-load'),
-    
-    // Пагинация
-    prevPageBtn: document.getElementById('prev-page'),
-    nextPageBtn: document.getElementById('next-page'),
-    pageInfo: document.getElementById('page-info'),
-    
-    // Карточка сотрудника
-    backButton: document.getElementById('back-button'),
-    employeeName: document.getElementById('employee-name'),
-    employeePhone: document.getElementById('employee-phone'),
-    telegramLink: document.getElementById('telegram-link'),
-    employeeLoading: document.getElementById('employee-loading'),
-    employeeTableContainer: document.getElementById('employee-table-container'),
-    employeeTableBody: document.getElementById('employee-table-body'),
-    employeeError: document.getElementById('employee-error'),
-    
-    // Итоги
-    totalPayments: document.getElementById('total-payments'),
-    totalAmount: document.getElementById('total-amount'),
-    lastPaymentDate: document.getElementById('last-payment-date'),
-    
-    // Общее
-    lastUpdate: document.getElementById('last-update'),
-    exportCsvBtn: document.getElementById('export-csv')
-};
+// Элементы DOM - будем заполнять после загрузки DOM
+const elements = {};
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
-    // Загрузка данных
-    loadData();
+    // Сначала инициализируем элементы DOM
+    initializeDOMElements();
     
-    // Назначение обработчиков событий
+    // Затем настраиваем обработчики событий
     setupEventListeners();
+    
+    // И только потом загружаем данные
+    loadData();
     
     // Обновление времени последнего обновления
     updateLastUpdateTime();
 });
 
-// Настройка обработчиков событий
-function setupEventListeners() {
+// Инициализация элементов DOM
+function initializeDOMElements() {
+    // Основной экран
+    elements.mainScreen = document.getElementById('main-screen');
+    elements.employeeScreen = document.getElementById('employee-screen');
+    
     // Фильтры
-    elements.yearFilter.addEventListener('change', applyFilters);
-    elements.periodFilter.addEventListener('change', applyFilters);
-    elements.statusFilter.addEventListener('change', applyFilters);
-    elements.searchInput.addEventListener('input', debounce(applyFilters, 300));
-    elements.resetFiltersBtn.addEventListener('click', resetFilters);
-    elements.lastPeriodBtn.addEventListener('click', () => showLastPeriod());
-    elements.lastUnpaidBtn.addEventListener('click', () => showLastUnpaid());
+    elements.yearFilter = document.getElementById('year-filter');
+    elements.periodFilter = document.getElementById('period-filter');
+    elements.statusFilter = document.getElementById('status-filter');
+    elements.searchInput = document.getElementById('search-input');
+    elements.resetFiltersBtn = document.getElementById('reset-filters');
+    elements.lastPeriodBtn = document.getElementById('last-period');
+    elements.lastUnpaidBtn = document.getElementById('last-unpaid');
+    
+    // Индикатор режима
+    elements.modeIndicator = document.getElementById('mode-indicator');
+    elements.modeMessage = document.getElementById('mode-message');
+    
+    // Таблица
+    elements.loading = document.getElementById('loading');
+    elements.tableContainer = document.getElementById('table-container');
+    elements.tableBody = document.getElementById('table-body');
+    elements.rowCount = document.getElementById('row-count');
+    elements.periodInfo = document.getElementById('period-info');
+    elements.errorMessage = document.getElementById('error-message');
+    elements.retryBtn = document.getElementById('retry-load');
     
     // Пагинация
-    elements.prevPageBtn.addEventListener('click', () => changePage(-1));
-    elements.nextPageBtn.addEventListener('click', () => changePage(1));
+    elements.prevPageBtn = document.getElementById('prev-page');
+    elements.nextPageBtn = document.getElementById('next-page');
+    elements.pageInfo = document.getElementById('page-info');
+    
+    // Карточка сотрудника
+    elements.backButton = document.getElementById('back-button');
+    elements.employeeName = document.getElementById('employee-name');
+    elements.employeePhone = document.getElementById('employee-phone');
+    elements.telegramLink = document.getElementById('telegram-link');
+    elements.employeeLoading = document.getElementById('employee-loading');
+    elements.employeeTableContainer = document.getElementById('employee-table-container');
+    elements.employeeTableBody = document.getElementById('employee-table-body');
+    elements.employeeError = document.getElementById('employee-error');
+    
+    // Итоги
+    elements.totalPayments = document.getElementById('total-payments');
+    elements.totalAmount = document.getElementById('total-amount');
+    elements.lastPaymentDate = document.getElementById('last-payment-date');
+    
+    // Общее
+    elements.lastUpdate = document.getElementById('last-update');
+    elements.exportCsvBtn = document.getElementById('export-csv');
+    
+    console.log('Инициализировано элементов DOM:', Object.keys(elements).length);
+}
+
+// Настройка обработчиков событий
+function setupEventListeners() {
+    console.log('Настройка обработчиков событий...');
+    
+    // Фильтры (проверяем существование элементов)
+    if (elements.yearFilter) elements.yearFilter.addEventListener('change', applyFilters);
+    if (elements.periodFilter) elements.periodFilter.addEventListener('change', applyFilters);
+    if (elements.statusFilter) elements.statusFilter.addEventListener('change', applyFilters);
+    if (elements.searchInput) elements.searchInput.addEventListener('input', debounce(applyFilters, 300));
+    if (elements.resetFiltersBtn) elements.resetFiltersBtn.addEventListener('click', resetFilters);
+    
+    // Кнопки специальных режимов (могут отсутствовать в демо-режиме)
+    if (elements.lastPeriodBtn) {
+        elements.lastPeriodBtn.addEventListener('click', () => showLastPeriod());
+        console.log('Кнопка "Последний период" найдена');
+    } else {
+        console.log('Кнопка "Последний период" не найдена');
+    }
+    
+    if (elements.lastUnpaidBtn) {
+        elements.lastUnpaidBtn.addEventListener('click', () => showLastUnpaid());
+        console.log('Кнопка "Неоплаченные" найдена');
+    } else {
+        console.log('Кнопка "Неоплаченные" не найдена');
+    }
+    
+    // Пагинация
+    if (elements.prevPageBtn) elements.prevPageBtn.addEventListener('click', () => changePage(-1));
+    if (elements.nextPageBtn) elements.nextPageBtn.addEventListener('click', () => changePage(1));
     
     // Кнопки
-    elements.retryBtn.addEventListener('click', loadData);
-    elements.backButton.addEventListener('click', showMainScreen);
-    elements.exportCsvBtn.addEventListener('click', exportToCSV);
+    if (elements.retryBtn) elements.retryBtn.addEventListener('click', loadData);
+    if (elements.backButton) elements.backButton.addEventListener('click', showMainScreen);
+    if (elements.exportCsvBtn) elements.exportCsvBtn.addEventListener('click', exportToCSV);
     
     // Сортировка таблицы
     document.querySelectorAll('#payments-table th[data-sort]').forEach(th => {
@@ -118,6 +141,8 @@ function setupEventListeners() {
             sortEmployeeTable(field);
         });
     });
+    
+    console.log('Обработчики событий настроены');
 }
 
 // Загрузка данных из Google Apps Script
@@ -128,6 +153,8 @@ async function loadData() {
         // ⭐ ВСТАВЬТЕ ВАШ URL Google Apps Script ЗДЕСЬ ⭐
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyl3W8gDtZcjWuwwhLfE_EmRXGSbViv7xwjPuNn8cVoXvnlKuDz2xCBy_kMWiBmUdQ-nA/exec';
         
+        console.log('Загрузка данных с:', APPS_SCRIPT_URL);
+        
         const response = await fetch(APPS_SCRIPT_URL);
         
         if (!response.ok) {
@@ -135,6 +162,7 @@ async function loadData() {
         }
         
         const result = await response.json();
+        console.log('Получены данные:', result);
         
         if (result.success && result.data) {
             // Преобразуем данные в нужный формат
@@ -150,11 +178,14 @@ async function loadData() {
                 formattedAmount: formatCurrency(parseFloat(item.amount) || 0)
             }));
             
+            console.log('Обработано записей:', allPayments.length);
+            
             // ⭐ ДИНАМИЧЕСКОЕ ОПРЕДЕЛЕНИЕ ПЕРИОДОВ И СТАТУСОВ
             updatePeriodsAndStatuses(allPayments);
             
             // Определяем последний период
             lastPeriod = getLastPeriod(allPayments);
+            console.log('Последний период:', lastPeriod);
             
             // Заполняем фильтры
             populateFilters(allPayments);
@@ -203,44 +234,63 @@ function updatePeriodsAndStatuses(payments) {
     // Сортируем статусы
     allStatuses = Array.from(statusesSet).sort();
     
+    console.log('Найдено периодов:', allPeriods.length);
+    console.log('Найдено статусов:', allStatuses.length);
+    
     // Сохраняем в localStorage для будущих сессий
-    localStorage.setItem('payment_periods', JSON.stringify(allPeriods));
-    localStorage.setItem('payment_statuses', JSON.stringify(allStatuses));
+    try {
+        localStorage.setItem('payment_periods', JSON.stringify(allPeriods));
+        localStorage.setItem('payment_statuses', JSON.stringify(allStatuses));
+    } catch (e) {
+        console.log('Не удалось сохранить в localStorage:', e);
+    }
 }
 
 // Заполнение фильтров
 function populateFilters(payments) {
+    console.log('Заполнение фильтров...');
+    
     // Годы (динамически из данных)
     const years = [...new Set(payments.map(p => p.year))].sort((a, b) => b - a);
-    elements.yearFilter.innerHTML = '<option value="">Все годы</option>';
-    years.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        elements.yearFilter.appendChild(option);
-    });
+    if (elements.yearFilter) {
+        elements.yearFilter.innerHTML = '<option value="">Все годы</option>';
+        years.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            elements.yearFilter.appendChild(option);
+        });
+    }
     
     // Периоды (динамически из allPeriods)
-    elements.periodFilter.innerHTML = '<option value="">Все периоды</option>';
-    allPeriods.forEach(period => {
-        const option = document.createElement('option');
-        option.value = period;
-        option.textContent = period;
-        elements.periodFilter.appendChild(option);
-    });
+    if (elements.periodFilter) {
+        elements.periodFilter.innerHTML = '<option value="">Все периоды</option>';
+        allPeriods.forEach(period => {
+            const option = document.createElement('option');
+            option.value = period;
+            option.textContent = period;
+            elements.periodFilter.appendChild(option);
+        });
+    }
     
     // Статусы (динамически из allStatuses)
-    elements.statusFilter.innerHTML = '<option value="">Все статусы</option>';
-    allStatuses.forEach(status => {
-        const option = document.createElement('option');
-        option.value = status;
-        option.textContent = status;
-        elements.statusFilter.appendChild(option);
-    });
+    if (elements.statusFilter) {
+        elements.statusFilter.innerHTML = '<option value="">Все статусы</option>';
+        allStatuses.forEach(status => {
+            const option = document.createElement('option');
+            option.value = status;
+            option.textContent = status;
+            elements.statusFilter.appendChild(option);
+        });
+    }
+    
+    console.log('Фильтры заполнены');
 }
 
 // Применение фильтров
 function applyFilters() {
+    console.log('Применение фильтров...');
+    
     // Сбрасываем специальные режимы
     exitMode();
     
@@ -248,28 +298,32 @@ function applyFilters() {
     let filtered = [...allPayments];
     
     // Фильтр по году
-    const selectedYear = elements.yearFilter.value;
+    const selectedYear = elements.yearFilter ? elements.yearFilter.value : '';
     if (selectedYear) {
         filtered = filtered.filter(p => p.year == selectedYear);
     }
     
     // Фильтр по периоду
-    const selectedPeriod = elements.periodFilter.value;
+    const selectedPeriod = elements.periodFilter ? elements.periodFilter.value : '';
     if (selectedPeriod) {
         filtered = filtered.filter(p => p.period === selectedPeriod);
-        elements.periodInfo.textContent = `Период: ${selectedPeriod}`;
+        if (elements.periodInfo) {
+            elements.periodInfo.textContent = `Период: ${selectedPeriod}`;
+        }
     } else {
-        elements.periodInfo.textContent = '';
+        if (elements.periodInfo) {
+            elements.periodInfo.textContent = '';
+        }
     }
     
     // Фильтр по статусу
-    const selectedStatus = elements.statusFilter.value;
+    const selectedStatus = elements.statusFilter ? elements.statusFilter.value : '';
     if (selectedStatus) {
         filtered = filtered.filter(p => p.status === selectedStatus);
     }
     
     // Фильтр по поиску
-    const searchTerm = elements.searchInput.value.toLowerCase();
+    const searchTerm = elements.searchInput ? elements.searchInput.value.toLowerCase() : '';
     if (searchTerm) {
         filtered = filtered.filter(p => 
             p.employee.toLowerCase().includes(searchTerm) || 
@@ -286,19 +340,26 @@ function applyFilters() {
     // Отображение
     renderTable();
     updatePagination();
+    
+    console.log('Фильтры применены, записей:', filteredPayments.length);
 }
 
 // Режим: Последний период (все выплаты)
 function showLastPeriod() {
-    if (!lastPeriod) return;
+    console.log('Показать последний период');
+    
+    if (!lastPeriod) {
+        console.log('Нет данных о последнем периоде');
+        return;
+    }
     
     currentMode = 'last-period';
     
     // Сбрасываем фильтры
-    elements.yearFilter.value = '';
-    elements.periodFilter.value = '';
-    elements.statusFilter.value = '';
-    elements.searchInput.value = '';
+    if (elements.yearFilter) elements.yearFilter.value = '';
+    if (elements.periodFilter) elements.periodFilter.value = '';
+    if (elements.statusFilter) elements.statusFilter.value = '';
+    if (elements.searchInput) elements.searchInput.value = '';
     
     // Показываем все записи последнего периода
     filteredPayments = allPayments.filter(p => p.period === lastPeriod);
@@ -311,23 +372,31 @@ function showLastPeriod() {
     sortPayments();
     renderTable();
     updatePagination();
+    
+    console.log('Показано записей последнего периода:', filteredPayments.length);
 }
 
 // Режим: Неоплаченные в последнем периоде
 function showLastUnpaid() {
-    if (!lastPeriod) return;
+    console.log('Показать неоплаченные последнего периода');
+    
+    if (!lastPeriod) {
+        console.log('Нет данных о последнем периоде');
+        return;
+    }
     
     currentMode = 'last-unpaid';
     
     // Сбрасываем фильтры
-    elements.yearFilter.value = '';
-    elements.periodFilter.value = '';
-    elements.statusFilter.value = '';
-    elements.searchInput.value = '';
+    if (elements.yearFilter) elements.yearFilter.value = '';
+    if (elements.periodFilter) elements.periodFilter.value = '';
+    if (elements.statusFilter) elements.statusFilter.value = '';
+    if (elements.searchInput) elements.searchInput.value = '';
     
     // Показываем только НЕОПЛАЧЕННЫЕ записи последнего периода
     const unpaidStatuses = allStatuses.filter(status => 
-        !status.includes('Оплатили') && !status.includes('оплатили')
+        !status.toLowerCase().includes('оплатили') && 
+        !status.toLowerCase().includes('оплачено')
     );
     
     filteredPayments = allPayments.filter(p => 
@@ -342,6 +411,8 @@ function showLastUnpaid() {
     sortPayments();
     renderTable();
     updatePagination();
+    
+    console.log('Показано неоплаченных записей:', filteredPayments.length);
 }
 
 // Выход из специального режима
@@ -349,32 +420,42 @@ function exitMode() {
     if (!currentMode) return;
     
     currentMode = null;
-    elements.modeIndicator.classList.add('hidden');
-    elements.lastPeriodBtn.classList.remove('active');
-    elements.lastUnpaidBtn.classList.remove('active');
+    if (elements.modeIndicator) {
+        elements.modeIndicator.classList.add('hidden');
+    }
+    if (elements.lastPeriodBtn) {
+        elements.lastPeriodBtn.classList.remove('active');
+    }
+    if (elements.lastUnpaidBtn) {
+        elements.lastUnpaidBtn.classList.remove('active');
+    }
 }
 
 // Показать индикатор режима
 function showModeIndicator(message) {
+    if (!elements.modeIndicator || !elements.modeMessage) return;
+    
     elements.modeMessage.innerHTML = message;
     elements.modeIndicator.classList.remove('hidden');
     
     // Активируем соответствующую кнопку
-    if (currentMode === 'last-period') {
+    if (currentMode === 'last-period' && elements.lastPeriodBtn) {
         elements.lastPeriodBtn.classList.add('active');
-        elements.lastUnpaidBtn.classList.remove('active');
-    } else if (currentMode === 'last-unpaid') {
+        if (elements.lastUnpaidBtn) elements.lastUnpaidBtn.classList.remove('active');
+    } else if (currentMode === 'last-unpaid' && elements.lastUnpaidBtn) {
         elements.lastUnpaidBtn.classList.add('active');
-        elements.lastPeriodBtn.classList.remove('active');
+        if (elements.lastPeriodBtn) elements.lastPeriodBtn.classList.remove('active');
     }
 }
 
 // Сброс фильтров
 function resetFilters() {
-    elements.yearFilter.value = '';
-    elements.periodFilter.value = '';
-    elements.statusFilter.value = '';
-    elements.searchInput.value = '';
+    console.log('Сброс фильтров');
+    
+    if (elements.yearFilter) elements.yearFilter.value = '';
+    if (elements.periodFilter) elements.periodFilter.value = '';
+    if (elements.statusFilter) elements.statusFilter.value = '';
+    if (elements.searchInput) elements.searchInput.value = '';
     
     exitMode();
     applyFilters();
@@ -390,6 +471,13 @@ function getLastPeriod(payments) {
 
 // Отображение таблицы
 function renderTable() {
+    console.log('Отрисовка таблицы...');
+    
+    if (!elements.tableBody) {
+        console.error('Элемент tableBody не найден');
+        return;
+    }
+    
     if (filteredPayments.length === 0) {
         elements.tableBody.innerHTML = `
             <tr>
@@ -399,7 +487,9 @@ function renderTable() {
                 </td>
             </tr>
         `;
-        elements.rowCount.textContent = '0';
+        if (elements.rowCount) {
+            elements.rowCount.textContent = '0';
+        }
         return;
     }
     
@@ -432,7 +522,9 @@ function renderTable() {
     });
     
     elements.tableBody.innerHTML = tableHTML;
-    elements.rowCount.textContent = filteredPayments.length;
+    if (elements.rowCount) {
+        elements.rowCount.textContent = filteredPayments.length;
+    }
     
     // Назначаем обработчики для ссылок на сотрудников
     document.querySelectorAll('.employee-link').forEach(link => {
@@ -442,13 +534,20 @@ function renderTable() {
             showEmployeeDetails(paymentId);
         });
     });
+    
+    console.log('Таблица отрисована, записей:', filteredPayments.length);
 }
 
 // Отображение деталей сотрудника
 function showEmployeeDetails(paymentId) {
+    console.log('Показать детали сотрудника, ID:', paymentId);
+    
     // Находим платеж по ID
     const payment = allPayments.find(p => p.id === paymentId);
-    if (!payment) return;
+    if (!payment) {
+        console.error('Платеж не найден:', paymentId);
+        return;
+    }
     
     // Находим все платежи этого сотрудника
     currentEmployeePayments = allPayments.filter(p => 
@@ -456,24 +555,34 @@ function showEmployeeDetails(paymentId) {
     );
     
     // Заполняем информацию о сотруднике
-    elements.employeeName.textContent = payment.employee;
-    elements.employeePhone.textContent = formatPhone(payment.phone);
+    if (elements.employeeName) {
+        elements.employeeName.textContent = payment.employee;
+    }
+    if (elements.employeePhone) {
+        elements.employeePhone.textContent = formatPhone(payment.phone);
+    }
     
     // Настраиваем Telegram ссылку
-    const telegramUrl = `${CONFIG.telegramUrl}${formatPhoneForTelegram(payment.phone)}`;
-    elements.telegramLink.href = telegramUrl;
-    elements.telegramLink.title = `Написать ${payment.employee} в Telegram`;
+    if (elements.telegramLink) {
+        const telegramUrl = `${CONFIG.telegramUrl}${formatPhoneForTelegram(payment.phone)}`;
+        elements.telegramLink.href = telegramUrl;
+        elements.telegramLink.title = `Написать ${payment.employee} в Telegram`;
+    }
     
     // Переключаем экраны
-    elements.mainScreen.classList.add('hidden');
-    elements.employeeScreen.classList.remove('hidden');
+    if (elements.mainScreen) elements.mainScreen.classList.add('hidden');
+    if (elements.employeeScreen) elements.employeeScreen.classList.remove('hidden');
     
     // Отображаем историю выплат
     renderEmployeeTable();
+    
+    console.log('Загружено выплат сотрудника:', currentEmployeePayments.length);
 }
 
 // Отображение таблицы выплат сотрудника
 function renderEmployeeTable() {
+    if (!elements.employeeTableBody) return;
+    
     if (currentEmployeePayments.length === 0) {
         elements.employeeTableBody.innerHTML = `
             <tr>
@@ -482,9 +591,9 @@ function renderEmployeeTable() {
                 </td>
             </tr>
         `;
-        elements.totalPayments.textContent = '0';
-        elements.totalAmount.textContent = '0';
-        elements.lastPaymentDate.textContent = '-';
+        if (elements.totalPayments) elements.totalPayments.textContent = '0';
+        if (elements.totalAmount) elements.totalAmount.textContent = '0';
+        if (elements.lastPaymentDate) elements.lastPaymentDate.textContent = '-';
         return;
     }
     
@@ -517,21 +626,24 @@ function renderEmployeeTable() {
     });
     
     elements.employeeTableBody.innerHTML = tableHTML;
-    elements.totalPayments.textContent = currentEmployeePayments.length;
-    elements.totalAmount.textContent = formatCurrency(totalAmount);
-    elements.lastPaymentDate.textContent = lastPayment;
+    if (elements.totalPayments) elements.totalPayments.textContent = currentEmployeePayments.length;
+    if (elements.totalAmount) elements.totalAmount.textContent = formatCurrency(totalAmount);
+    if (elements.lastPaymentDate) elements.lastPaymentDate.textContent = lastPayment;
     
     // Показываем таблицу
-    elements.employeeLoading.classList.add('hidden');
-    elements.employeeTableContainer.classList.remove('hidden');
-    elements.employeeError.classList.add('hidden');
+    if (elements.employeeLoading) elements.employeeLoading.classList.add('hidden');
+    if (elements.employeeTableContainer) elements.employeeTableContainer.classList.remove('hidden');
+    if (elements.employeeError) elements.employeeError.classList.add('hidden');
 }
 
 // Вспомогательные функции
 function getStatusClass(status) {
-    if (status.includes('Оплатили') || status.includes('оплатили')) {
+    if (!status) return 'status-other';
+    
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('оплатили') || statusLower.includes('оплачено')) {
         return 'status-paid';
-    } else if (status.includes('Не') || status.includes('не')) {
+    } else if (statusLower.includes('не') || statusLower.includes('отказ')) {
         return 'status-not-paid';
     }
     return 'status-other';
@@ -550,7 +662,7 @@ function formatPhone(phone) {
     const cleaned = phone.replace(/\D/g, '');
     
     // Форматируем: +7 (XXX) XXX-XX-XX для российских номеров
-    if (cleaned.length === 11 && cleaned.startsWith('7') || cleaned.startsWith('8')) {
+    if (cleaned.length === 11 && (cleaned.startsWith('7') || cleaned.startsWith('8'))) {
         return `+7 (${cleaned.substring(1, 4)}) ${cleaned.substring(4, 7)}-${cleaned.substring(7, 9)}-${cleaned.substring(9, 11)}`;
     }
     
@@ -565,9 +677,6 @@ function formatPhoneForTelegram(phone) {
     // Для Telegram нужен номер без + и пробелов
     return cleaned;
 }
-
-// Остальные функции (sortTable, sortPayments, changePage, updatePagination, exportToCSV и т.д.)
-// остаются такими же как в предыдущей версии, но я добавлю их для полноты:
 
 function sortTable(field) {
     if (currentSort.field === field) {
@@ -634,10 +743,18 @@ function changePage(delta) {
 function updatePagination() {
     const totalPages = Math.ceil(filteredPayments.length / CONFIG.itemsPerPage);
     
-    elements.pageInfo.textContent = `Страница ${currentPage} из ${totalPages}`;
-    elements.prevPageBtn.disabled = currentPage <= 1;
-    elements.nextPageBtn.disabled = currentPage >= totalPages;
-    elements.prevPageBtn.parentElement.classList.toggle('hidden', totalPages <= 1);
+    if (elements.pageInfo) {
+        elements.pageInfo.textContent = `Страница ${currentPage} из ${totalPages}`;
+    }
+    if (elements.prevPageBtn) {
+        elements.prevPageBtn.disabled = currentPage <= 1;
+    }
+    if (elements.nextPageBtn) {
+        elements.nextPageBtn.disabled = currentPage >= totalPages;
+    }
+    if (elements.prevPageBtn && elements.prevPageBtn.parentElement) {
+        elements.prevPageBtn.parentElement.classList.toggle('hidden', totalPages <= 1);
+    }
 }
 
 function exportToCSV() {
@@ -688,29 +805,29 @@ function sortEmployeeTable(field) {
 }
 
 function showMainScreen() {
-    elements.mainScreen.classList.remove('hidden');
-    elements.employeeScreen.classList.add('hidden');
+    if (elements.mainScreen) elements.mainScreen.classList.remove('hidden');
+    if (elements.employeeScreen) elements.employeeScreen.classList.add('hidden');
 }
 
 function showLoading() {
-    elements.loading.classList.remove('hidden');
-    elements.tableContainer.classList.add('hidden');
-    elements.errorMessage.classList.add('hidden');
+    if (elements.loading) elements.loading.classList.remove('hidden');
+    if (elements.tableContainer) elements.tableContainer.classList.add('hidden');
+    if (elements.errorMessage) elements.errorMessage.classList.add('hidden');
 }
 
 function hideLoading() {
-    elements.loading.classList.add('hidden');
-    elements.tableContainer.classList.remove('hidden');
+    if (elements.loading) elements.loading.classList.add('hidden');
+    if (elements.tableContainer) elements.tableContainer.classList.remove('hidden');
 }
 
 function showError() {
-    elements.loading.classList.add('hidden');
-    elements.tableContainer.classList.add('hidden');
-    elements.errorMessage.classList.remove('hidden');
+    if (elements.loading) elements.loading.classList.add('hidden');
+    if (elements.tableContainer) elements.tableContainer.classList.add('hidden');
+    if (elements.errorMessage) elements.errorMessage.classList.remove('hidden');
 }
 
 function hideError() {
-    elements.errorMessage.classList.add('hidden');
+    if (elements.errorMessage) elements.errorMessage.classList.add('hidden');
     hideLoading();
 }
 
@@ -723,7 +840,10 @@ function showWarning(message) {
         <button onclick="this.parentElement.remove()">×</button>
     `;
     
-    document.querySelector('.container').prepend(warningDiv);
+    const container = document.querySelector('.container');
+    if (container) {
+        container.prepend(warningDiv);
+    }
 }
 
 function updateLastUpdateTime() {
@@ -735,7 +855,9 @@ function updateLastUpdateTime() {
         hour: '2-digit',
         minute: '2-digit'
     });
-    elements.lastUpdate.textContent = `Последнее обновление: ${formattedTime}`;
+    if (elements.lastUpdate) {
+        elements.lastUpdate.textContent = `Последнее обновление: ${formattedTime}`;
+    }
 }
 
 function debounce(func, wait) {
