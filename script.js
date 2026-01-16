@@ -563,11 +563,12 @@ function showEmployeeDetails(paymentId) {
     }
     
     // Настраиваем Telegram ссылку
-    if (elements.telegramLink) {
-        const telegramUrl = `${CONFIG.telegramUrl}${formatPhoneForTelegram(payment.phone)}`;
-        elements.telegramLink.href = telegramUrl;
-        elements.telegramLink.title = `Написать ${payment.employee} в Telegram`;
-    }
+if (elements.telegramLink) {
+    const phoneNumber = formatPhoneForTelegram(payment.phone);
+    const telegramUrl = `${CONFIG.telegramUrl}+${phoneNumber}`; // ← добавляем +
+    elements.telegramLink.href = telegramUrl;
+    elements.telegramLink.title = `Написать ${payment.employee} в Telegram`;
+}
     
     // Переключаем экраны
     if (elements.mainScreen) elements.mainScreen.classList.add('hidden');
