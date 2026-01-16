@@ -4,6 +4,7 @@
     --success-color: #27ae60;
     --warning-color: #f39c12;
     --danger-color: #e74c3c;
+    --telegram-color: #0088cc;
     --light-color: #ecf0f1;
     --dark-color: #2c3e50;
     --border-color: #bdc3c7;
@@ -48,10 +49,61 @@ header h1 {
     gap: 10px;
 }
 
+.employee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.employee-actions {
+    display: flex;
+    gap: 10px;
+}
+
 .subtitle {
     color: #7f8c8d;
     font-size: 0.95rem;
     margin-top: 5px;
+}
+
+/* Индикатор режима */
+.mode-indicator {
+    background-color: #e3f2fd;
+    border-left: 4px solid var(--secondary-color);
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mode-indicator i {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.mode-indicator > div {
+    flex: 1;
+}
+
+.mode-indicator strong {
+    color: var(--primary-color);
+}
+
+.mode-indicator small {
+    color: #666;
+    display: block;
+    margin-top: 4px;
 }
 
 /* Фильтры */
@@ -122,6 +174,7 @@ header h1 {
     justify-content: center;
     gap: 8px;
     font-weight: 600;
+    text-decoration: none;
 }
 
 .btn-primary {
@@ -140,6 +193,25 @@ header h1 {
 
 .btn-secondary:hover {
     background-color: #636e72;
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #e67e22;
+}
+
+.btn-telegram {
+    background-color: var(--telegram-color);
+    color: white;
+}
+
+.btn-telegram:hover {
+    background-color: #0077b5;
+    color: white;
 }
 
 .btn-small {
@@ -162,11 +234,22 @@ header h1 {
     padding: 15px 20px;
     background-color: #f8f9fa;
     border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .table-info {
     font-weight: 600;
     color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.period-info {
+    font-weight: normal;
+    color: #7f8c8d;
+    font-size: 0.9rem;
 }
 
 .table-wrapper {
@@ -190,6 +273,7 @@ th {
     cursor: pointer;
     user-select: none;
     position: relative;
+    white-space: nowrap;
 }
 
 th i {
@@ -212,6 +296,7 @@ tbody tr:hover {
 
 td {
     padding: 15px;
+    vertical-align: top;
 }
 
 /* Статусы */
@@ -356,10 +441,12 @@ footer {
     .button-group {
         width: 100%;
         justify-content: stretch;
+        flex-wrap: wrap;
     }
     
     .btn {
         flex: 1;
+        min-width: 150px;
     }
     
     .table-header {
@@ -376,5 +463,19 @@ footer {
     .summary {
         flex-direction: column;
         gap: 15px;
+    }
+    
+    .employee-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .employee-actions {
+        width: 100%;
+    }
+    
+    .btn-telegram {
+        width: 100%;
+        justify-content: center;
     }
 }
